@@ -1,0 +1,1 @@
+<?php Loader::element("footer_required"); ?>

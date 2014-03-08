@@ -1,0 +1,31 @@
+[
+	{
+		"name":"Member Title",
+		"handle": "memberTitle",
+		"type":"text"
+	},
+	{
+		"name": "Member Type",
+		"handle": "memberType",
+		"type": "select",
+		"selectOptions":
+		[
+		"TestOption",
+		"TestOption2",
+		"TestOption3"
+		]
+	},
+	{
+		"name": "Member Type Test",
+		"handle": "memberTypeTest",
+		"type": "select",
+		"selectMultiple": 1,
+		"selectOrder": "alpha_asc", 
+		"selectOptions":
+		[
+		"TestOption",
+		"TestOption2",
+		"TestOption3"
+		]
+	}
+]

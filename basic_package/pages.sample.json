@@ -1,0 +1,28 @@
+[
+	{
+		"name": "Team Members",
+		"desc": "Team memebers container page",
+		"type": "left_sidebar",
+		"children":
+		[
+		{
+			"name": "Pesho Dinqta",
+			"desc": "Golqmata rabota",
+			"type": "left_sidebar",
+			"attributes":
+			{
+				"memberTitle": "Shefe Lvl. 1"
+			}
+		},
+		{
+			"name": "Ivan Rakiqta",
+			"desc": "Golqmata rabota",
+			"type": "left_sidebar",
+			"attributes":
+			{
+				"memberTitle": "Shefe Lvl. 2"
+			}
+		}
+		]
+	}
+]
