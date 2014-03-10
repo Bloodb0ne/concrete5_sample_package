@@ -10,6 +10,13 @@ Package can create:
 * add blocks
 
 ----
+## TODO
+
+* Create page area population ( must be made with area name )
+* Configuring of blocks in the forementioned areas ( should work with custom block descriptor file? )
+* Separete file for area and block description so it doesnt clutter the pages ( could identify pages by using internal id for each one)
+
+----
 ## Changelog
 
 ----
