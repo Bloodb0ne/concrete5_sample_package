@@ -1,0 +1,19 @@
+{
+	"homepage":
+	{
+		"defaultAttributes": [ "tags","thumbnail"],
+		"publishTarget" : "pagetype",
+		"publishValue": "homepage"
+	},
+	"homepage2":
+	{
+		"defaultAttributes": [ "tags","thumbnail"],
+		"publishTarget" : "all"
+	},
+	"homepage3":
+	{
+		"defaultAttributes": [ "tags","thumbnail"],
+		"publishTarget" : "targetPage",
+		"publishValue": 2
+	}
+}

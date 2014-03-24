@@ -3,24 +3,28 @@
 		"name": "Team Members",
 		"desc": "Team memebers container page",
 		"type": "left_sidebar",
+		"areas":{
+			"area1":"content of area 1",
+			"area2":"content of area 2"
+		},
 		"children":
 		[
 		{
-			"name": "Pesho Dinqta",
-			"desc": "Golqmata rabota",
+			"name": "Some member",
+			"desc": "Big CEO",
 			"type": "left_sidebar",
 			"attributes":
 			{
-				"memberTitle": "Shefe Lvl. 1"
+				"memberTitle": "Boss Lvl. 1"
 			}
 		},
 		{
-			"name": "Ivan Rakiqta",
-			"desc": "Golqmata rabota",
+			"name": "Some Member2",
+			"desc": "COO",
 			"type": "left_sidebar",
 			"attributes":
 			{
-				"memberTitle": "Shefe Lvl. 2"
+				"memberTitle": "Boss Lvl. 2"
 			}
 		}
 		]

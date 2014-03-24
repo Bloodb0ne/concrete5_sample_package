@@ -3,6 +3,7 @@
 	class ContentJsonLoader
 	{
 		var $package = false;
+		var $pages = array();
 	
 	public function __construct($pkg=false){
 		$this->package = $pkg;
@@ -18,6 +19,71 @@
 
 	}
 
+	public function loadComposer(){
+		$compList = file_get_contents("composer.json",true);
+		$compList = json_decode($compList,true);
+
+		foreach ($compList as $pageType => $pageTypeSettings) {
+			$this->setPageTypeComposer($pageType,$pageTypeSettings);
+		}
+
+	}
+	private function setPageTypeComposer($type,$settings){
+		$ct = CollectionType::getByHandle($type);
+		
+		if(isset($settings['publishTarget']))
+		{
+			$target = $settings['publishTarget'];
+
+			if(isset($settings['publishValue']))
+				$value  = $settings['publishValue'];
+			else 
+				$value = "";
+			
+			switch ($target) {
+			case 'all':
+				$ct->saveComposerPublishTargetAll();
+				break;
+			case 'pageType':
+			case 'pagetype':
+				$ctParents = CollectionType::getByHandle($value);
+				if(is_object($ctParents)){
+					$ct->saveComposerPublishTargetPageType($ctParents);
+				}
+				break;
+			case 'targetPage':
+			case 'targetpage':
+				//Chech if we added the pages
+				if(isset($this->pages[$value]) && is_object($this->pages[$value]))
+				{
+					$ct->saveComposerPublishTargetPage($this->pages[$value]);
+				}
+				break;
+			
+			default:
+				// Error report? but not do anything
+				break;
+			}
+		}
+		
+		//Array with the composer attributes
+		$akArray = array();
+
+		if(isset($settings['defaultAttributes']) && is_array($settings['defaultAttributes'])){
+
+			foreach ($settings['defaultAttributes'] as $attrHandle) {
+				//Get Attribute
+				$ak = CollectionAttributeKey::getByHandle($attrHandle);
+				$ct->assignCollectionAttribute($ak);
+				$akArray[]  = $ak->getAttributeKeyID();
+			}
+		}
+
+		//Save the attributes for the default composer
+		$ct->saveComposerAttributeKeys($akArray);
+
+		return $ct;
+	}
 	public function loadPages(){
 		$pageList = file_get_contents("pages.json",true);
 		$pageList = json_decode($pageList,true);
@@ -40,6 +106,17 @@
 
 	}
 	
+
+	private function addArea($page,$name,$content){
+		$area  = Area::getOrCreate($page,$name);
+
+		$block = BlockType::getByHandle('html');
+		$data = array(
+		    'content' => $content
+		);
+		$page->addBlock($block,$name, $data);
+	}
+
 	private function createPage($page,$parent=false){
 		//Get Page type
 		$ct = CollectionType::getByHandle($page['type']);
@@ -79,6 +156,22 @@
 			if(isset($page['attributes']) && is_array($page['attributes']))
 			foreach ($page['attributes'] as $attrKey => $attrVal) {
 				$newPage->addAttribute($attrKey,$attrVal);
+			}
+
+			if(isset($page['areas']) && is_array($page['areas']))
+			foreach ($page['areas'] as $areaName => $areaContent) {
+				$this->addArea($newPage,$areaName,$areaContent);
+			}
+
+			// if(isset($page['globalAreas']) && is_array($page['globalAreas']))
+			// foreach ($page['globalAreas'] as $attrKey => $attrVal) {
+			// 	$newPage->addArea($attrKey,$attrVal);
+			// }
+
+			//Add pages for the Composer construction
+			if(isset($page['id']) && is_int($page['id']))
+			{
+				array_push($this->pages,array($page['id'] => $newPage));
 			}
 			return $newPage;
 		}
@@ -137,6 +230,36 @@
 
 	public function loadBlock($handle){
 		BlockType::installBlockTypeFromPackage($handle,$this->package);
+	}
+
+	public function loadAttributeTypes(){
+		//Get All attribute types
+		$path = dirname(__FILE__).'\models\attribute\types';
+		if ($handle = opendir($path)) {
+        while (false !== ($entry = readdir($handle))) {
+			
+            if ($entry != "." &&
+            	$entry != ".." &&
+            	is_dir($path."\\".$entry)) {
+
+	            $multiFileAttrType = AttributeType::getByHandle($entry);
+				if(!is_object($multiFileAttrType) || !intval($multiFileAttrType->getAttributeTypeID()) ) { 
+					$name = ucwords(str_replace("_"," ",$entry));
+					$multiFileAttrType = AttributeType::add($entry, t($name), $this->package); 			  
+				}
+				
+				$db = Loader::db(); 
+
+				$collectionAttrCategory = AttributeKeyCategory::getByHandle('collection');
+				
+				$catTypeExists = $db->getOne('SELECT count(*) FROM AttributeTypeCategories WHERE atID=? AND akCategoryID=?', array( $multiFileAttrType->getAttributeTypeID(), $collectionAttrCategory->getAttributeKeyCategoryID() ));
+				if(!$catTypeExists) $collectionAttrCategory->associateAttributeKeyType($multiFileAttrType);	
+
+
+            }
+        }
+        closedir($handle);
+   		}
 	}
 
 	public function loadBlocks(){

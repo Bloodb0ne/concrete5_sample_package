@@ -19,8 +19,8 @@ class BasicPackagePackage extends Package {
 	}
 	public function uninstall(){
 		//Optional to remove the pages when removing the package
-		$cnt = new ContentJsonLoader($this);
-		$cnt->removePages();
+		// $cnt = new ContentJsonLoader($this);
+		// $cnt->removePages();
 
 		parent::uninstall();
 	}
@@ -28,10 +28,12 @@ class BasicPackagePackage extends Package {
 		$pkg = parent::install();	
 
 		$cnt = new ContentJsonLoader($pkg);
-		$cnt->addTheme('basic_theme'); //Installs and activates the theme
-		$cnt->loadAttributes(); //loads all page attributes described in the attributes.json file
-		$cnt->loadPages(); //loads all pages described in the pages.json file
-		$cnt->loadBlocks(); // Loads all the blocks in the /blocks folder
+		// $cnt->addTheme('basic_theme'); //Installs and activates the theme
+		// $cnt->loadAttributes(); //loads all page attributes described in the attributes.json file
+		// $cnt->loadPages(); //loads all pages described in the pages.json file
+		// $cnt->loadBlocks(); // Loads all the blocks in the /blocks folder
+		// $cnt->loadAttributeTypes();
+		// $cnt->loadComposer();
 	}
 }
 
