@@ -155,7 +155,15 @@
 			//Add Attributes
 			if(isset($page['attributes']) && is_array($page['attributes']))
 			foreach ($page['attributes'] as $attrKey => $attrVal) {
-				$newPage->addAttribute($attrKey,$attrVal);
+				
+				$ak = CollectionAttributeKey::getByHandle($attrKey);
+				
+				if(is_object($ak)){
+					$type = $ak->getAttributeType();
+					$typeName = $type->getAttributeTypeName();
+					$newPage->setAttribute($ak,$attrVal);
+				}				
+				
 			}
 
 			if(isset($page['areas']) && is_array($page['areas']))
